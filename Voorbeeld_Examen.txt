@@ -1,0 +1,56 @@
+Klasse Aankoop:
+
+class Aankoop extends Bestellingsonderdeel {
+    constructor(aantal, produkt) {
+        super();
+        this.aantal = aantal;
+        this.produkt = produkt;
+    }
+
+    get aantal() {
+        return this._aantal;
+    }
+
+    set aantal(value) {
+        if (!Number.isInteger(value) || value <= 0) {
+            throw new Error('Foutieve ingave voor aantal');
+        }
+        this._aantal = value;
+    }
+
+    get produkt() {
+        return this._produkt;
+    }
+
+    set produkt(value) {
+        if (!(value instanceof Produkt)) {
+            throw new Error('Foutieve ingave voor produkt');
+        }
+        this._produkt = value;
+    }
+}
+
+Klasse Bestelling: 
+
+class Bestelling {
+    constructor() {
+        this.onderdelen = [];
+    }
+
+    voegToe(onderdeel) {
+        this.onderdelen.push(onderdeel);
+    }
+
+    berekenPrijs() {
+        let totalPrijs = 0;
+        let totalKorting = 0;
+        for (const onderdeel of this.onderdelen) {
+            if (onderdeel instanceof Aankoop) {
+                totalPrijs += onderdeel.aantal * onderdeel.produkt.prijs;
+            } else if (onderdeel instanceof ProcentueleKorting) {
+                totalKorting += onderdeel.percentage;
+            }
+        }
+        return totalPrijs * (1 - totalKorting / 100);
+    }
+}
